@@ -121,14 +121,12 @@ class BreathingExercise {
         if (this.isPaused) {
             this.pausedProgress = performance.now() - this.startTime;
             cancelAnimationFrame(this.animationFrame);
-            this.lastTimerUpdate = performance.now();
+            clearTimeout(this.timerTimeout);
         } else {
+            const pauseDuration = performance.now() - (this.startTime + this.pausedProgress);
             this.startTime = performance.now() - this.pausedProgress;
-            if (this.lastTimerUpdate) {
-                const pauseDuration = Math.floor((performance.now() - this.lastTimerUpdate) / 1000);
-                this.remainingTime += pauseDuration;
-            }
             this.animate();
+            this.updateTimer();
         }
     }
 
@@ -214,7 +212,7 @@ class BreathingExercise {
             } else if (cycleProgress < this.inhaleTime + this.inhaleHoldTime) {
                 if (this.instruction.textContent !== 'hold') {
                     this.instruction.textContent = 'hold';
-                    this.vibrate([100, 100, 100, 100]); // Stronger hold pattern
+                    this.signalTransition();
                 }
                 this.circleBackground.setAttribute('transform', `scale(1.2)`);
             } else if (cycleProgress < this.inhaleTime + this.inhaleHoldTime + this.exhaleTime) {
@@ -292,21 +290,15 @@ class BreathingExercise {
     }
 
     updateTimer() {
-        if (this.isPaused) {
-            return;
-        }
-
+        if (this.isPaused) return;
+        
         const minutes = Math.floor(this.remainingTime / 60);
         const seconds = this.remainingTime % 60;
         this.timer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         
         if (this.remainingTime > 0) {
             this.remainingTime--;
-            requestAnimationFrame(() => {
-                if (!this.isPaused) {
-                    setTimeout(() => this.updateTimer(), 1000);
-                }
-            });
+            this.timerTimeout = setTimeout(() => this.updateTimer(), 1000);
         } else {
             this.finish();
         }
@@ -371,7 +363,8 @@ class BreathingExercise {
     }
 
     signalTransition() {
-        this.vibrate([100, 50, 100]);
+        // Much stronger vibration pattern
+        this.vibrate([0, 300, 100, 300]);
         this.playTransitionSound();
     }
 }
