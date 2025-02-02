@@ -179,11 +179,11 @@ class BreathingExercise {
         this.dial.setAttribute('cx', endX);
         this.dial.setAttribute('cy', endY);
 
-        // Add second-by-second light vibration
+        // Stronger vibration for second markers
         const currentSecond = Math.floor(progress);
         if (currentSecond > this.lastVibrationTime) {
             this.lastVibrationTime = currentSecond;
-            this.vibrate(10); // Light 10ms vibration each second
+            this.vibrate(50); // Increased from 10ms to 50ms
         }
 
         // Handle different breathing patterns
@@ -193,14 +193,14 @@ class BreathingExercise {
                     this.isInhaling = true;
                     this.instruction.textContent = 'breathe in';
                     this.circleBackground.setAttribute('fill', 'rgba(50, 50, 50, 0.9)');
-                    this.vibrate([0, 100]);
+                    this.vibrate([200, 100, 200]); // Stronger transition pattern
                 }
                 const scale = 1 + (cycleProgress / this.inhaleTime) * 0.2;
                 this.circleBackground.setAttribute('transform', `scale(${scale})`);
             } else if (cycleProgress < this.inhaleTime + this.inhaleHoldTime) {
                 if (this.instruction.textContent !== 'hold') {
                     this.instruction.textContent = 'hold';
-                    this.vibrate([0, 50, 50, 50]);
+                    this.vibrate([100, 100, 100, 100]); // Stronger hold pattern
                 }
                 this.circleBackground.setAttribute('transform', `scale(1.2)`);
             } else if (cycleProgress < this.inhaleTime + this.inhaleHoldTime + this.exhaleTime) {
@@ -321,7 +321,14 @@ class BreathingExercise {
     // Add new method for vibration patterns
     vibrate(pattern) {
         if (this.hasVibration && !this.isPaused) {
-            navigator.vibrate(pattern);
+            // Convert single number to array pattern
+            if (typeof pattern === 'number') {
+                pattern = [pattern];
+            }
+            
+            // Amplify vibration durations for better perception
+            const amplifiedPattern = pattern.map(duration => duration * 5);
+            navigator.vibrate(amplifiedPattern);
         }
     }
 }
