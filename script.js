@@ -82,6 +82,27 @@ class BreathingExercise {
         this.currentVariation = 'light';
 
         this.lastTimerUpdate = null;
+
+        // Sound and vibration controls
+        this.vibrationEnabled = true;
+        this.soundEnabled = false;
+        
+        // Create audio context and sounds
+        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        this.transitionSound = this.createTransitionSound();
+
+        // Add control listeners
+        document.getElementById('vibrationToggle').addEventListener('change', (e) => {
+            this.vibrationEnabled = e.target.checked;
+        });
+        
+        document.getElementById('soundToggle').addEventListener('change', (e) => {
+            this.soundEnabled = e.target.checked;
+            if (this.soundEnabled) {
+                // Resume audio context on user interaction
+                this.audioContext.resume();
+            }
+        });
     }
 
     setVariation(variationId) {
@@ -179,13 +200,6 @@ class BreathingExercise {
         this.dial.setAttribute('cx', endX);
         this.dial.setAttribute('cy', endY);
 
-        // Stronger vibration for second markers
-        const currentSecond = Math.floor(progress);
-        if (currentSecond > this.lastVibrationTime) {
-            this.lastVibrationTime = currentSecond;
-            this.vibrate(50); // Increased from 10ms to 50ms
-        }
-
         // Handle different breathing patterns
         if (this.variations[this.currentVariation].type === 'box') {
             if (cycleProgress < this.inhaleTime) {
@@ -193,7 +207,7 @@ class BreathingExercise {
                     this.isInhaling = true;
                     this.instruction.textContent = 'breathe in';
                     this.circleBackground.setAttribute('fill', 'rgba(50, 50, 50, 0.9)');
-                    this.vibrate([200, 100, 200]); // Stronger transition pattern
+                    this.signalTransition();
                 }
                 const scale = 1 + (cycleProgress / this.inhaleTime) * 0.2;
                 this.circleBackground.setAttribute('transform', `scale(${scale})`);
@@ -320,16 +334,45 @@ class BreathingExercise {
 
     // Add new method for vibration patterns
     vibrate(pattern) {
-        if (this.hasVibration && !this.isPaused) {
-            // Convert single number to array pattern
+        if (this.hasVibration && this.vibrationEnabled && !this.isPaused) {
             if (typeof pattern === 'number') {
                 pattern = [pattern];
             }
-            
-            // Amplify vibration durations for better perception
-            const amplifiedPattern = pattern.map(duration => duration * 5);
-            navigator.vibrate(amplifiedPattern);
+            // Strong vibration for transitions
+            navigator.vibrate(pattern.map(duration => duration * 10));
         }
+    }
+
+    createTransitionSound() {
+        // Create a short "pop" sound
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(440, 0);
+        
+        gainNode.gain.setValueAtTime(0, 0);
+        
+        oscillator.start();
+        return { oscillator, gainNode };
+    }
+
+    playTransitionSound() {
+        if (!this.soundEnabled) return;
+        
+        const time = this.audioContext.currentTime;
+        this.transitionSound.gainNode.gain.cancelScheduledValues(time);
+        this.transitionSound.gainNode.gain.setValueAtTime(0, time);
+        this.transitionSound.gainNode.gain.linearRampToValueAtTime(0.3, time + 0.01);
+        this.transitionSound.gainNode.gain.linearRampToValueAtTime(0, time + 0.1);
+    }
+
+    signalTransition() {
+        this.vibrate([100, 50, 100]);
+        this.playTransitionSound();
     }
 }
 

@@ -171,4 +171,28 @@ body {
 
 .breathing-circle-background.finished {
     cursor: pointer;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: white;
+}
+
+.control-label {
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.control-label:has(input:checked) {
+    opacity: 1;
+}
+
+.control-toggle {
+    display: none;
+}
+
+.control-icon {
+    font-size: 20px;
 } 
