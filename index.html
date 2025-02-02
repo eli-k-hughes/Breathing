@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breathing Exercise</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="breathing-circle">
+            <svg class="circle-container" viewBox="-10 -10 320 320">
+                <!-- Base circle -->
+                <circle class="base-ring" 
+                    cx="150" cy="150" r="148" 
+                    stroke="rgba(158, 177, 255, 0.4)" 
+                    stroke-width="4" 
+                    fill="none"/>
+                
+                <!-- Progress arc -->
+                <path class="progress-ring" 
+                    stroke="white" 
+                    stroke-width="4" 
+                    fill="none"/>
+                
+                <!-- Inner background circle -->
+                <circle class="breathing-circle-background"
+                    cx="150" cy="150" r="90"
+                    fill="rgba(30, 30, 30, 0.9)"
+                    stroke="rgba(158, 177, 255, 0.2)"  
+                    stroke-width="2"
+                    style="cursor: pointer"/>
+                
+                <!-- Fixed centered text -->
+                <text class="breathing-instruction" 
+                    x="150" y="150" 
+                    text-anchor="middle" 
+                    dominant-baseline="middle" 
+                    fill="white">breathe in</text>
+                
+                <!-- Dial -->
+                <circle class="dial" 
+                    cx="150" cy="2" r="10" 
+                    fill="white"/>
+
+                <!-- After the breathing-circle-background and before the text -->
+                <g class="play-pause-icon" style="opacity: 0">
+                    <path d="M130,120 L130,180 L180,150 Z" fill="white" opacity="0.3" class="play-icon"/>
+                    <g class="pause-icon" opacity="0.3">
+                        <rect x="130" y="120" width="15" height="60" fill="white"/>
+                        <rect x="155" y="120" width="15" height="60" fill="white"/>
+                    </g>
+                </g>
+            </svg>
+        </div>
+        <div class="timer">04:00</div>
+        <div class="variation-selector">
+            <div class="variation-row">
+                <label class="radio-label">
+                    <input type="radio" name="variation" value="light" checked>
+                    Breathe Light (7/min)
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="variation" value="slow">
+                    Breathe Slow (6/min)
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="variation" value="deep">
+                    Breathe Deep (5/min)
+                </label>
+            </div>
+            <div class="variation-row">
+                <label class="radio-label">
+                    <input type="radio" name="variation" value="box">
+                    Box Breathing (4/min)
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="variation" value="relaxed">
+                    Deep & Relaxed (3/min)
+                </label>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
