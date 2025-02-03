@@ -122,6 +122,7 @@ body {
 .timer {
     color: #fff;
     font-size: 24px;
+    font-family: 'Faustina', serif;
 }
 
 .breathing-circle-background {
@@ -131,7 +132,7 @@ body {
 
 .breathing-instruction {
     font-size: 24px;
-    font-family: Arial, sans-serif;
+    font-family: 'Faustina', serif;
     pointer-events: none;
 }
 
@@ -163,6 +164,7 @@ body {
     justify-content: center;
     color: rgba(158, 177, 255, 0.4);
     font-size: 14px;
+    font-family: 'Faustina', serif;
     text-transform: uppercase;
     letter-spacing: 1px;
     background: rgba(20, 20, 20, 0.98);
@@ -197,7 +199,7 @@ body {
 
 .radio-label {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 12px;
     cursor: pointer;
     color: rgba(255, 255, 255, 0.6);
@@ -209,10 +211,12 @@ body {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    padding-top: 2px;
 }
 
 .variation-name {
-    font-size: 16px;
+    font-size: 18px;
+    font-family: 'Faustina', serif;
 }
 
 .variation-desc {
@@ -278,4 +282,11 @@ body {
     .variation-list {
         padding: 0; /* Remove list padding on mobile */
     }
+}
+
+/* Style the radio input itself */
+.radio-label input[type="radio"] {
+    margin: 0;
+    position: relative;
+    top: -8px;
 } 
