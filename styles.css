@@ -166,37 +166,51 @@ body {
 .drawer-content {
     display: flex;
     justify-content: center;
-    gap: 60px;
     padding: 20px;
     height: calc(100% - 40px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }
 
-.variation-column {
+.variation-list {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    touch-action: pan-y pinch-zoom;
-    padding: 10px 0;
+    gap: 24px;
+    max-width: 600px;
+    width: 100%;
+    padding: 0 20px;
 }
 
 .radio-label {
     display: flex;
-    align-items: center;
-    gap: 8px;
+    align-items: flex-start;
+    gap: 12px;
     cursor: pointer;
     color: rgba(255, 255, 255, 0.6);
     transition: color 0.2s ease;
     padding: 8px 0;
 }
 
-.radio-label:hover {
-    color: rgba(255, 255, 255, 0.8);
+.variation-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
-.radio-label input[type="radio"] {
-    cursor: pointer;
+.variation-name {
+    font-size: 16px;
+}
+
+.variation-desc {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.4);
+    line-height: 1.4;
+}
+
+.variation-desc em {
+    color: rgba(158, 177, 255, 0.6);
+    font-style: italic;
+    font-weight: 500;
 }
 
 .play-pause-icon {
