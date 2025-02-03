@@ -141,13 +141,14 @@ body {
     left: 0;
     right: 0;
     background: rgba(20, 20, 20, 0.98);
-    max-height: 40vh;
+    height: 40vh;
     border-top: 1px solid rgba(158, 177, 255, 0.4);
     transform: translateY(calc(100% - 40px));
     transition: transform 0.3s ease;
     z-index: 100;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .variation-selector:hover {
@@ -156,7 +157,7 @@ body {
 
 .drawer-title {
     height: 40px;
-    min-height: 40px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -165,14 +166,17 @@ body {
     text-transform: uppercase;
     letter-spacing: 1px;
     background: rgba(20, 20, 20, 0.98);
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
 .drawer-content {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
-    padding: 20px 0;
-    min-height: 0;
+    padding: 20px;
+    height: calc(40vh - 40px);
 }
 
 .variation-list {
@@ -182,7 +186,7 @@ body {
     max-width: 600px;
     width: 100%;
     margin: 0 auto;
-    padding: 0 20px;
+    padding-bottom: 20px;
 }
 
 .variation-list::after {
@@ -263,4 +267,15 @@ body {
 
 .variation-row {
     display: none;
+}
+
+/* Add media query for mobile to ensure consistent padding */
+@media (max-width: 600px) {
+    .drawer-content {
+        padding: 20px 16px; /* Consistent padding for mobile */
+    }
+    
+    .variation-list {
+        padding: 0; /* Remove list padding on mobile */
+    }
 } 
