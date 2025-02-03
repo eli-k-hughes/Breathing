@@ -140,11 +140,12 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(20, 20, 20, 0.95);
+    background: rgba(20, 20, 20, 0.98);
     max-height: 40vh;
     border-top: 1px solid rgba(158, 177, 255, 0.4);
     transform: translateY(calc(100% - 40px));
     transition: transform 0.3s ease;
+    z-index: 100;
 }
 
 .variation-selector:hover {
@@ -168,12 +169,16 @@ body {
     gap: 60px;
     padding: 20px;
     height: calc(100% - 40px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .variation-column {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    touch-action: pan-y pinch-zoom;
+    padding: 10px 0;
 }
 
 .radio-label {
@@ -183,6 +188,7 @@ body {
     cursor: pointer;
     color: rgba(255, 255, 255, 0.6);
     transition: color 0.2s ease;
+    padding: 8px 0;
 }
 
 .radio-label:hover {

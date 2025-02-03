@@ -103,6 +103,40 @@ class BreathingExercise {
                 this.audioContext.resume();
             }
         });
+
+        // Add drawer handling
+        this.drawer = document.querySelector('.variation-selector');
+        this.wasRunningBeforeDrawer = false;
+
+        this.drawer.addEventListener('mouseenter', () => {
+            if (!this.isPaused) {
+                this.wasRunningBeforeDrawer = true;
+                this.togglePause();
+            }
+        });
+
+        this.drawer.addEventListener('mouseleave', () => {
+            if (this.wasRunningBeforeDrawer) {
+                this.togglePause();
+                this.wasRunningBeforeDrawer = false;
+            }
+        });
+
+        // For mobile
+        this.drawer.addEventListener('touchstart', () => {
+            if (!this.isPaused) {
+                this.wasRunningBeforeDrawer = true;
+                this.togglePause();
+            }
+        });
+
+        this.drawer.addEventListener('touchend', (e) => {
+            // Only resume if we're not touching a radio button
+            if (e.target.type !== 'radio' && this.wasRunningBeforeDrawer) {
+                this.togglePause();
+                this.wasRunningBeforeDrawer = false;
+            }
+        });
     }
 
     setVariation(variationId) {
@@ -180,7 +214,6 @@ class BreathingExercise {
     animate(timestamp) {
         if (!this.startTime) this.startTime = timestamp;
         
-        // Calculate progress based on actual time or paused progress
         const progress = this.isPaused ? 
             this.pausedProgress / 1000 : 
             (timestamp - this.startTime) / 1000;
@@ -211,35 +244,22 @@ class BreathingExercise {
 
         // Handle different breathing patterns
         if (this.variations[this.currentVariation].type === 'box') {
-            if (cycleProgress < this.inhaleTime) {
-                if (!this.isInhaling || this.instruction.textContent !== 'breathe in') {
-                    this.isInhaling = true;
-                    this.instruction.textContent = 'breathe in';
-                    this.circleBackground.setAttribute('fill', 'rgba(50, 50, 50, 0.9)');
-                    this.signalTransition();
-                }
-                const scale = 1 + (cycleProgress / this.inhaleTime) * 0.2;
-                this.circleBackground.setAttribute('transform', `scale(${scale})`);
-            } else if (cycleProgress < this.inhaleTime + this.inhaleHoldTime) {
-                if (this.instruction.textContent !== 'hold') {
-                    this.instruction.textContent = 'hold';
-                    this.signalTransition();
-                }
-                this.circleBackground.setAttribute('transform', `scale(1.2)`);
-            } else if (cycleProgress < this.inhaleTime + this.inhaleHoldTime + this.exhaleTime) {
-                if (this.instruction.textContent !== 'breathe out') {
-                    this.instruction.textContent = 'breathe out';
-                    this.signalTransition();
-                }
-                const exhaleProgress = (cycleProgress - this.inhaleTime - this.inhaleHoldTime) / this.exhaleTime;
-                const scale = 1.2 - exhaleProgress * 0.2;
-                this.circleBackground.setAttribute('transform', `scale(${scale})`);
-            } else {
-                if (this.instruction.textContent !== 'hold') {
-                    this.instruction.textContent = 'hold';
-                    this.signalTransition();
-                }
-                this.circleBackground.setAttribute('transform', `scale(1.0)`);
+            const inhaleEnd = this.inhaleTime;
+            const inhaleHoldEnd = inhaleEnd + this.inhaleHoldTime;
+            const exhaleEnd = inhaleHoldEnd + this.exhaleTime;
+            
+            if (Math.abs(cycleProgress - inhaleEnd) < 0.05) {
+                this.instruction.textContent = 'hold';
+                this.signalTransition();
+            } else if (Math.abs(cycleProgress - inhaleHoldEnd) < 0.05) {
+                this.instruction.textContent = 'breathe out';
+                this.signalTransition();
+            } else if (Math.abs(cycleProgress - exhaleEnd) < 0.05) {
+                this.instruction.textContent = 'hold';
+                this.signalTransition();
+            } else if (Math.abs(cycleProgress) < 0.05) {
+                this.instruction.textContent = 'breathe in';
+                this.signalTransition();
             }
         } else if (this.variations[this.currentVariation].type === 'hold') {
             if (cycleProgress < this.inhaleTime) {
@@ -289,7 +309,7 @@ class BreathingExercise {
             }
         }
 
-        if (this.remainingTime > 0) {
+        if (this.remainingTime > 0 && !this.isPaused) {
             this.animationFrame = requestAnimationFrame(this.animate.bind(this));
         }
     }
@@ -368,6 +388,11 @@ class BreathingExercise {
     }
 
     signalTransition() {
+        if (this.isPaused) return; // Don't signal during pause
+        
+        // Clear any pending vibrations
+        navigator.vibrate(0);
+        
         // Much stronger vibration pattern
         this.vibrate([0, 300, 100, 300]);
         this.playTransitionSound();
