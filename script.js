@@ -59,7 +59,7 @@ class BreathingExercise {
         this.animationFrame = null;
         
         this.isFinished = false;
-        this.isPaused = false;
+        this.isPaused = true;  // Start paused
         
         // Add click handler for the central circle
         this.circleBackground.addEventListener('click', () => {
@@ -161,6 +161,11 @@ class BreathingExercise {
             cancelAnimationFrame(this.animationFrame);
             clearTimeout(this.timerTimeout);
         } else {
+            if (this.startTime === null) {
+                // First start of the exercise
+                this.instruction.textContent = 'breathe in';
+                this.signalTransition();
+            }
             const pauseDuration = performance.now() - (this.startTime + this.pausedProgress);
             this.startTime = performance.now() - this.pausedProgress;
             this.animate();
@@ -184,7 +189,7 @@ class BreathingExercise {
 
     restart() {
         this.isFinished = false;
-        this.isPaused = false;
+        this.isPaused = true;  // Start paused
         this.startTime = null;
         this.pausedProgress = 0;
         this.remainingTime = this.totalDuration;
@@ -197,21 +202,17 @@ class BreathingExercise {
         
         this.lastTimerUpdate = null;
         
-        // Signal the initial transition
-        this.instruction.textContent = 'breathe in';
-        this.circleBackground.setAttribute('fill', 'rgba(50, 50, 50, 0.9)');
-        this.signalTransition();
+        // Show begin text instead of start
+        this.instruction.textContent = 'begin';
+        this.circleBackground.setAttribute('fill', 'rgba(30, 30, 30, 0.9)');
         
         this.start();
     }
 
     start() {
-        // Signal the initial transition
-        this.instruction.textContent = 'breathe in';
-        this.circleBackground.setAttribute('fill', 'rgba(50, 50, 50, 0.9)');
-        this.signalTransition();
-        
-        this.animate();
+        // Don't start animation immediately
+        this.instruction.textContent = 'begin';
+        this.circleBackground.setAttribute('fill', 'rgba(30, 30, 30, 0.9)');
         this.updateTimer();
     }
 
