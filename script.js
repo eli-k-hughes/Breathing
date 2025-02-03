@@ -262,55 +262,68 @@ class BreathingExercise {
                 this.signalTransition();
             }
         } else if (this.variations[this.currentVariation].type === 'hold') {
-            if (cycleProgress < this.inhaleTime) {
-                if (!this.isInhaling || this.instruction.textContent !== 'breathe in') {
-                    this.isInhaling = true;
-                    this.instruction.textContent = 'breathe in';
-                    this.circleBackground.setAttribute('fill', 'rgba(50, 50, 50, 0.9)');
-                    this.signalTransition();
-                }
-                const scale = 1 + (cycleProgress / this.inhaleTime) * 0.2;
-                this.circleBackground.setAttribute('transform', `scale(${scale})`);
-            } else if (cycleProgress < this.inhaleTime + this.inhaleHoldTime) {
-                if (this.instruction.textContent !== 'hold') {
-                    this.instruction.textContent = 'hold';
-                    this.signalTransition();
-                }
-                this.circleBackground.setAttribute('transform', `scale(1.2)`);
-            } else {
-                if (this.instruction.textContent !== 'breathe out') {
-                    this.instruction.textContent = 'breathe out';
-                    this.signalTransition();
-                }
-                const exhaleProgress = (cycleProgress - this.inhaleTime - this.inhaleHoldTime) / this.exhaleTime;
-                const scale = 1.2 - exhaleProgress * 0.2;
-                this.circleBackground.setAttribute('transform', `scale(${scale})`);
+            const inhaleEnd = this.inhaleTime;
+            const holdEnd = inhaleEnd + this.inhaleHoldTime;
+            const cycleEnd = holdEnd + this.exhaleTime;
+            
+            if (Math.abs(cycleProgress - inhaleEnd) < 0.05) {
+                this.instruction.textContent = 'hold';
+                this.signalTransition();
+            } else if (Math.abs(cycleProgress - holdEnd) < 0.05) {
+                this.instruction.textContent = 'breathe out';
+                this.signalTransition();
+            } else if (Math.abs(cycleProgress) < 0.05 || Math.abs(cycleProgress - cycleEnd) < 0.05) {
+                this.instruction.textContent = 'breathe in';
+                this.signalTransition();
             }
         } else {
-            if (cycleProgress < this.inhaleTime) {
-                if (!this.isInhaling || this.instruction.textContent !== 'breathe in') {
-                    this.isInhaling = true;
-                    this.instruction.textContent = 'breathe in';
-                    this.circleBackground.setAttribute('fill', 'rgba(50, 50, 50, 0.9)');
-                    this.signalTransition();
-                }
-                const scale = 1 + (cycleProgress / this.inhaleTime) * 0.2;
-                this.circleBackground.setAttribute('transform', `scale(${scale})`);
-            } else {
-                if (this.isInhaling || this.instruction.textContent !== 'breathe out') {
-                    this.isInhaling = false;
-                    this.instruction.textContent = 'breathe out';
-                    this.circleBackground.setAttribute('fill', 'rgba(30, 30, 30, 0.9)');
-                    this.signalTransition();
-                }
-                const exhaleProgress = (cycleProgress - this.inhaleTime) / this.exhaleTime;
-                const scale = 1.2 - exhaleProgress * 0.2;
-                this.circleBackground.setAttribute('transform', `scale(${scale})`);
+            const inhaleEnd = this.inhaleTime;
+            const cycleEnd = this.cycleTime;
+            
+            if (Math.abs(cycleProgress - inhaleEnd) < 0.05) {
+                this.instruction.textContent = 'breathe out';
+                this.signalTransition();
+            } else if (Math.abs(cycleProgress) < 0.05 || Math.abs(cycleProgress - cycleEnd) < 0.05) {
+                this.instruction.textContent = 'breathe in';
+                this.signalTransition();
             }
         }
 
+        // Update visual elements based on current phase
+        this.updateVisuals(cycleProgress);
+
         if (this.remainingTime > 0 && !this.isPaused) {
             this.animationFrame = requestAnimationFrame(this.animate.bind(this));
+        }
+    }
+
+    updateVisuals(cycleProgress) {
+        if (this.variations[this.currentVariation].type === 'box') {
+            // ... existing box breathing visual logic ...
+        } else if (this.variations[this.currentVariation].type === 'hold') {
+            if (cycleProgress < this.inhaleTime) {
+                const scale = 1 + (cycleProgress / this.inhaleTime) * 0.2;
+                this.circleBackground.setAttribute('transform', `scale(${scale})`);
+                this.circleBackground.setAttribute('fill', 'rgba(50, 50, 50, 0.9)');
+            } else if (cycleProgress < this.inhaleTime + this.inhaleHoldTime) {
+                this.circleBackground.setAttribute('transform', `scale(1.2)`);
+            } else {
+                const exhaleProgress = (cycleProgress - this.inhaleTime - this.inhaleHoldTime) / this.exhaleTime;
+                const scale = 1.2 - exhaleProgress * 0.2;
+                this.circleBackground.setAttribute('transform', `scale(${scale})`);
+                this.circleBackground.setAttribute('fill', 'rgba(30, 30, 30, 0.9)');
+            }
+        } else {
+            if (cycleProgress < this.inhaleTime) {
+                const scale = 1 + (cycleProgress / this.inhaleTime) * 0.2;
+                this.circleBackground.setAttribute('transform', `scale(${scale})`);
+                this.circleBackground.setAttribute('fill', 'rgba(50, 50, 50, 0.9)');
+            } else {
+                const exhaleProgress = (cycleProgress - this.inhaleTime) / this.exhaleTime;
+                const scale = 1.2 - exhaleProgress * 0.2;
+                this.circleBackground.setAttribute('transform', `scale(${scale})`);
+                this.circleBackground.setAttribute('fill', 'rgba(30, 30, 30, 0.9)');
+            }
         }
     }
 
