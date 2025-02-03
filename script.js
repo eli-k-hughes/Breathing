@@ -242,48 +242,53 @@ class BreathingExercise {
         this.dial.setAttribute('cx', endX);
         this.dial.setAttribute('cy', endY);
 
-        // Handle different breathing patterns
+        // Calculate timing threshold based on cycle duration
+        const threshold = this.cycleTime * 0.01; // 1% of cycle time for more precise timing
+
         if (this.variations[this.currentVariation].type === 'box') {
+            // Box breathing timing remains the same as it's working correctly
             const inhaleEnd = this.inhaleTime;
             const inhaleHoldEnd = inhaleEnd + this.inhaleHoldTime;
             const exhaleEnd = inhaleHoldEnd + this.exhaleTime;
             
-            if (Math.abs(cycleProgress - inhaleEnd) < 0.05) {
+            if (Math.abs(cycleProgress - inhaleEnd) < threshold) {
                 this.instruction.textContent = 'hold';
                 this.signalTransition();
-            } else if (Math.abs(cycleProgress - inhaleHoldEnd) < 0.05) {
+            } else if (Math.abs(cycleProgress - inhaleHoldEnd) < threshold) {
                 this.instruction.textContent = 'breathe out';
                 this.signalTransition();
-            } else if (Math.abs(cycleProgress - exhaleEnd) < 0.05) {
+            } else if (Math.abs(cycleProgress - exhaleEnd) < threshold) {
                 this.instruction.textContent = 'hold';
                 this.signalTransition();
-            } else if (Math.abs(cycleProgress) < 0.05) {
+            } else if (Math.abs(cycleProgress) < threshold) {
                 this.instruction.textContent = 'breathe in';
                 this.signalTransition();
             }
         } else if (this.variations[this.currentVariation].type === 'hold') {
+            // Deep & Relaxed (4-7-8)
             const inhaleEnd = this.inhaleTime;
             const holdEnd = inhaleEnd + this.inhaleHoldTime;
-            const cycleEnd = holdEnd + this.exhaleTime;
+            const cycleEnd = this.cycleTime;
             
-            if (Math.abs(cycleProgress - inhaleEnd) < 0.05) {
+            if (Math.abs(cycleProgress - inhaleEnd) < threshold) {
                 this.instruction.textContent = 'hold';
                 this.signalTransition();
-            } else if (Math.abs(cycleProgress - holdEnd) < 0.05) {
+            } else if (Math.abs(cycleProgress - holdEnd) < threshold) {
                 this.instruction.textContent = 'breathe out';
                 this.signalTransition();
-            } else if (Math.abs(cycleProgress) < 0.05 || Math.abs(cycleProgress - cycleEnd) < 0.05) {
+            } else if (Math.abs(cycleProgress) < threshold || Math.abs(cycleProgress - cycleEnd) < threshold) {
                 this.instruction.textContent = 'breathe in';
                 this.signalTransition();
             }
         } else {
+            // Regular patterns (Light, Slow, Deep)
             const inhaleEnd = this.inhaleTime;
             const cycleEnd = this.cycleTime;
             
-            if (Math.abs(cycleProgress - inhaleEnd) < 0.05) {
+            if (Math.abs(cycleProgress - inhaleEnd) < threshold) {
                 this.instruction.textContent = 'breathe out';
                 this.signalTransition();
-            } else if (Math.abs(cycleProgress) < 0.05 || Math.abs(cycleProgress - cycleEnd) < 0.05) {
+            } else if (Math.abs(cycleProgress) < threshold || Math.abs(cycleProgress - cycleEnd) < threshold) {
                 this.instruction.textContent = 'breathe in';
                 this.signalTransition();
             }
