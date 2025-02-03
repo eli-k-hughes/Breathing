@@ -148,7 +148,7 @@ class BreathingExercise {
         this.isFinished = false;
         this.isPaused = false;
         this.startTime = null;
-        this.pausedProgress = 0;  // Reset paused progress
+        this.pausedProgress = 0;
         this.remainingTime = this.totalDuration;
         this.isInhaling = true;
         
@@ -158,10 +158,21 @@ class BreathingExercise {
         this.circleBackground.classList.remove('finished');
         
         this.lastTimerUpdate = null;
+        
+        // Signal the initial transition
+        this.instruction.textContent = 'breathe in';
+        this.circleBackground.setAttribute('fill', 'rgba(50, 50, 50, 0.9)');
+        this.signalTransition();
+        
         this.start();
     }
 
     start() {
+        // Signal the initial transition
+        this.instruction.textContent = 'breathe in';
+        this.circleBackground.setAttribute('fill', 'rgba(50, 50, 50, 0.9)');
+        this.signalTransition();
+        
         this.animate();
         this.updateTimer();
     }
@@ -201,7 +212,7 @@ class BreathingExercise {
         // Handle different breathing patterns
         if (this.variations[this.currentVariation].type === 'box') {
             if (cycleProgress < this.inhaleTime) {
-                if (!this.isInhaling) {
+                if (!this.isInhaling || this.instruction.textContent !== 'breathe in') {
                     this.isInhaling = true;
                     this.instruction.textContent = 'breathe in';
                     this.circleBackground.setAttribute('fill', 'rgba(50, 50, 50, 0.9)');
@@ -216,46 +227,40 @@ class BreathingExercise {
                 }
                 this.circleBackground.setAttribute('transform', `scale(1.2)`);
             } else if (cycleProgress < this.inhaleTime + this.inhaleHoldTime + this.exhaleTime) {
-                this.instruction.textContent = 'breathe out';
-                if (this.isInhaling) {
-                    this.isInhaling = false;
-                    this.circleBackground.setAttribute('fill', 'rgba(30, 30, 30, 0.9)');
-                    this.vibrate([0, 100]); // Stronger vibration at transition
+                if (this.instruction.textContent !== 'breathe out') {
+                    this.instruction.textContent = 'breathe out';
+                    this.signalTransition();
                 }
                 const exhaleProgress = (cycleProgress - this.inhaleTime - this.inhaleHoldTime) / this.exhaleTime;
                 const scale = 1.2 - exhaleProgress * 0.2;
                 this.circleBackground.setAttribute('transform', `scale(${scale})`);
             } else {
-                this.instruction.textContent = 'hold';
-                this.circleBackground.setAttribute('transform', `scale(1.0)`);
                 if (this.instruction.textContent !== 'hold') {
                     this.instruction.textContent = 'hold';
-                    this.vibrate([0, 50, 50, 50]); // Double pulse for hold
+                    this.signalTransition();
                 }
+                this.circleBackground.setAttribute('transform', `scale(1.0)`);
             }
         } else if (this.variations[this.currentVariation].type === 'hold') {
             if (cycleProgress < this.inhaleTime) {
-                this.instruction.textContent = 'breathe in';
-                if (!this.isInhaling) {
+                if (!this.isInhaling || this.instruction.textContent !== 'breathe in') {
                     this.isInhaling = true;
+                    this.instruction.textContent = 'breathe in';
                     this.circleBackground.setAttribute('fill', 'rgba(50, 50, 50, 0.9)');
-                    this.vibrate([0, 100]);
+                    this.signalTransition();
                 }
                 const scale = 1 + (cycleProgress / this.inhaleTime) * 0.2;
                 this.circleBackground.setAttribute('transform', `scale(${scale})`);
             } else if (cycleProgress < this.inhaleTime + this.inhaleHoldTime) {
-                this.instruction.textContent = 'hold';
-                this.circleBackground.setAttribute('transform', `scale(1.2)`);
                 if (this.instruction.textContent !== 'hold') {
                     this.instruction.textContent = 'hold';
-                    this.vibrate([0, 50, 50, 50]);
+                    this.signalTransition();
                 }
+                this.circleBackground.setAttribute('transform', `scale(1.2)`);
             } else {
-                this.instruction.textContent = 'breathe out';
-                if (this.isInhaling) {
-                    this.isInhaling = false;
-                    this.circleBackground.setAttribute('fill', 'rgba(30, 30, 30, 0.9)');
-                    this.vibrate([0, 100]);
+                if (this.instruction.textContent !== 'breathe out') {
+                    this.instruction.textContent = 'breathe out';
+                    this.signalTransition();
                 }
                 const exhaleProgress = (cycleProgress - this.inhaleTime - this.inhaleHoldTime) / this.exhaleTime;
                 const scale = 1.2 - exhaleProgress * 0.2;
@@ -263,20 +268,20 @@ class BreathingExercise {
             }
         } else {
             if (cycleProgress < this.inhaleTime) {
-                if (!this.isInhaling) {
+                if (!this.isInhaling || this.instruction.textContent !== 'breathe in') {
                     this.isInhaling = true;
                     this.instruction.textContent = 'breathe in';
                     this.circleBackground.setAttribute('fill', 'rgba(50, 50, 50, 0.9)');
-                    this.vibrate([0, 100]); // Stronger vibration at transition
+                    this.signalTransition();
                 }
                 const scale = 1 + (cycleProgress / this.inhaleTime) * 0.2;
                 this.circleBackground.setAttribute('transform', `scale(${scale})`);
             } else {
-                if (this.isInhaling) {
+                if (this.isInhaling || this.instruction.textContent !== 'breathe out') {
                     this.isInhaling = false;
                     this.instruction.textContent = 'breathe out';
                     this.circleBackground.setAttribute('fill', 'rgba(30, 30, 30, 0.9)');
-                    this.vibrate([0, 100]); // Stronger vibration at transition
+                    this.signalTransition();
                 }
                 const exhaleProgress = (cycleProgress - this.inhaleTime) / this.exhaleTime;
                 const scale = 1.2 - exhaleProgress * 0.2;

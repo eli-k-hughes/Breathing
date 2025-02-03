@@ -140,9 +140,10 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(20, 20, 20, 0.9);
-    padding: 20px;
-    transform: translateY(70%);
+    background: rgba(20, 20, 20, 0.95);
+    max-height: 40vh;
+    border-top: 1px solid rgba(158, 177, 255, 0.4);
+    transform: translateY(calc(100% - 40px));
     transition: transform 0.3s ease;
 }
 
@@ -150,20 +151,29 @@ body {
     transform: translateY(0);
 }
 
-.variation-selector::before {
-    content: '';
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 10px solid transparent;
-    border-bottom-color: rgba(20, 20, 20, 0.9);
+.drawer-title {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(158, 177, 255, 0.4);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.variation-row {
+.drawer-content {
     display: flex;
-    gap: 20px;
     justify-content: center;
+    gap: 60px;
+    padding: 20px;
+    height: calc(100% - 40px);
+}
+
+.variation-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .radio-label {
@@ -171,6 +181,12 @@ body {
     align-items: center;
     gap: 8px;
     cursor: pointer;
+    color: rgba(255, 255, 255, 0.6);
+    transition: color 0.2s ease;
+}
+
+.radio-label:hover {
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .radio-label input[type="radio"] {
@@ -213,4 +229,8 @@ body {
 .control-icon {
     width: 24px;
     height: 24px;
+}
+
+.variation-row {
+    display: none;
 } 
