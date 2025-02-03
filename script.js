@@ -220,33 +220,18 @@ class BreathingExercise {
             
         const cycleProgress = progress % this.cycleTime;
 
-        // Calculate the current angle
+        // Calculate the current angle (only for visual updates)
         const currentAngle = (360 * cycleProgress) / this.cycleTime;
         
-        // Calculate the SVG arc path
-        const radius = 148;
-        const angleInRadians = (currentAngle - 90) * (Math.PI / 180);
-        
-        // Calculate end point
-        const endX = 150 + radius * Math.cos(angleInRadians);
-        const endY = 150 + radius * Math.sin(angleInRadians);
-        
-        // Create arc path
-        const largeArcFlag = currentAngle > 180 ? 1 : 0;
-        const arcPath = `M 150 2 A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}`;
-        
-        // Update progress ring
-        this.progressRing.setAttribute('d', arcPath);
-
-        // Update dial position
-        this.dial.setAttribute('cx', endX);
-        this.dial.setAttribute('cy', endY);
+        // Update visual elements
+        this.updateProgressRing(currentAngle);
+        this.updateDialPosition(currentAngle);
 
         // Calculate timing threshold based on cycle duration
         const threshold = this.cycleTime * 0.01; // 1% of cycle time for more precise timing
 
+        // Handle state transitions and vibrations
         if (this.variations[this.currentVariation].type === 'box') {
-            // Box breathing timing remains the same as it's working correctly
             const inhaleEnd = this.inhaleTime;
             const inhaleHoldEnd = inhaleEnd + this.inhaleHoldTime;
             const exhaleEnd = inhaleHoldEnd + this.exhaleTime;
@@ -265,7 +250,6 @@ class BreathingExercise {
                 this.signalTransition();
             }
         } else if (this.variations[this.currentVariation].type === 'hold') {
-            // Deep & Relaxed (4-7-8)
             const inhaleEnd = this.inhaleTime;
             const holdEnd = inhaleEnd + this.inhaleHoldTime;
             const cycleEnd = this.cycleTime;
@@ -414,6 +398,26 @@ class BreathingExercise {
         // Much stronger vibration pattern
         this.vibrate([0, 300, 100, 300]);
         this.playTransitionSound();
+    }
+
+    // New helper methods to separate visual updates
+    updateProgressRing(currentAngle) {
+        const radius = 148;
+        const largeArcFlag = currentAngle > 180 ? 1 : 0;
+        const angleInRadians = (currentAngle - 90) * (Math.PI / 180);
+        const endX = 150 + radius * Math.cos(angleInRadians);
+        const endY = 150 + radius * Math.sin(angleInRadians);
+        const arcPath = `M 150 2 A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}`;
+        this.progressRing.setAttribute('d', arcPath);
+    }
+
+    updateDialPosition(currentAngle) {
+        const radius = 148;
+        const angleInRadians = (currentAngle - 90) * (Math.PI / 180);
+        const endX = 150 + radius * Math.cos(angleInRadians);
+        const endY = 150 + radius * Math.sin(angleInRadians);
+        this.dial.setAttribute('cx', endX);
+        this.dial.setAttribute('cy', endY);
     }
 }
 
