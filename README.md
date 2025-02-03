@@ -7,4 +7,4 @@ A simple, elegant breathing exercise application with multiple breathing pattern
 - Box Breathing (4/min)
 - Deep & Relaxed (3/min)
 
-[Try it here](https://yourusername.github.io/repo-name) 
+[Try it here](https://eli-k-hughes.github.io/Breathing/) 
