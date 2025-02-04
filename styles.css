@@ -298,7 +298,10 @@ body {
 
 /* Add styles for the nostril indication */
 .breathing-instruction em {
-    font-size: 18px;
+    font-size: 16px;
     opacity: 0.7;
     font-style: italic;
+    display: block;
+    margin-top: 4px;
+    font-weight: 300;
 } 

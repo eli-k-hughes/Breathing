@@ -280,18 +280,18 @@ class BreathingExercise {
             }
         } else if (this.variations[this.currentVariation].type === 'nadi') {
             const cycleLength = this.inhaleTime + this.exhaleTime;
-            const totalCycle = cycleLength * 2; // Complete left-right cycle
+            const totalCycle = cycleLength * 2;
             const adjustedProgress = cycleProgress % totalCycle;
             
             // First half of cycle (Left inhale -> Right exhale)
             if (adjustedProgress < cycleLength) {
                 if (adjustedProgress < this.inhaleTime) {
-                    if (this.instruction.textContent !== 'breathe in') {
-                        this.instruction.innerHTML = 'breathe in<br><em style="font-weight: 300">Left</em>';
+                    if (!this.instruction.textContent.includes('Left')) {
+                        this.instruction.innerHTML = 'breathe in<br><em>Left Nostril</em>';
                         this.signalTransition();
                     }
                 } else if (Math.abs(adjustedProgress - this.inhaleTime) < threshold) {
-                    this.instruction.innerHTML = 'breathe out<br><em style="font-weight: 300">Right</em>';
+                    this.instruction.innerHTML = 'breathe out<br><em>Right Nostril</em>';
                     this.signalTransition();
                 }
             } 
@@ -300,11 +300,11 @@ class BreathingExercise {
                 const secondHalfProgress = adjustedProgress - cycleLength;
                 if (secondHalfProgress < this.inhaleTime) {
                     if (Math.abs(secondHalfProgress) < threshold) {
-                        this.instruction.innerHTML = 'breathe in<br><em style="font-weight: 300">Right</em>';
+                        this.instruction.innerHTML = 'breathe in<br><em>Right Nostril</em>';
                         this.signalTransition();
                     }
                 } else if (Math.abs(secondHalfProgress - this.inhaleTime) < threshold) {
-                    this.instruction.innerHTML = 'breathe out<br><em style="font-weight: 300">Left</em>';
+                    this.instruction.innerHTML = 'breathe out<br><em>Left Nostril</em>';
                     this.signalTransition();
                 }
             }
