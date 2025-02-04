@@ -287,11 +287,17 @@ class BreathingExercise {
             if (adjustedProgress < cycleLength) {
                 if (adjustedProgress < this.inhaleTime) {
                     if (!this.instruction.textContent.includes('Left')) {
-                        this.instruction.innerHTML = 'breathe in<br><em>Left Nostril</em>';
+                        const mainText = this.instruction.querySelector('tspan');
+                        const nostrilText = this.instruction.querySelector('.nostril-text');
+                        mainText.textContent = 'breathe in';
+                        nostrilText.textContent = 'Left Nostril';
                         this.signalTransition();
                     }
                 } else if (Math.abs(adjustedProgress - this.inhaleTime) < threshold) {
-                    this.instruction.innerHTML = 'breathe out<br><em>Right Nostril</em>';
+                    const mainText = this.instruction.querySelector('tspan');
+                    const nostrilText = this.instruction.querySelector('.nostril-text');
+                    mainText.textContent = 'breathe out';
+                    nostrilText.textContent = 'Right Nostril';
                     this.signalTransition();
                 }
             } 
@@ -300,11 +306,17 @@ class BreathingExercise {
                 const secondHalfProgress = adjustedProgress - cycleLength;
                 if (secondHalfProgress < this.inhaleTime) {
                     if (Math.abs(secondHalfProgress) < threshold) {
-                        this.instruction.innerHTML = 'breathe in<br><em>Right Nostril</em>';
+                        const mainText = this.instruction.querySelector('tspan');
+                        const nostrilText = this.instruction.querySelector('.nostril-text');
+                        mainText.textContent = 'breathe in';
+                        nostrilText.textContent = 'Right Nostril';
                         this.signalTransition();
                     }
                 } else if (Math.abs(secondHalfProgress - this.inhaleTime) < threshold) {
-                    this.instruction.innerHTML = 'breathe out<br><em>Left Nostril</em>';
+                    const mainText = this.instruction.querySelector('tspan');
+                    const nostrilText = this.instruction.querySelector('.nostril-text');
+                    mainText.textContent = 'breathe out';
+                    nostrilText.textContent = 'Left Nostril';
                     this.signalTransition();
                 }
             }
