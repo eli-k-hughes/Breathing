@@ -40,6 +40,12 @@ class BreathingExercise {
                 exhaleTime: 8,
                 name: 'Deep & Relaxed',
                 type: 'hold'
+            },
+            nadi: {
+                inhaleTime: 4,
+                exhaleTime: 4,
+                name: 'Nadi Shodhana',
+                type: 'nadi'
             }
         };
         
@@ -272,6 +278,36 @@ class BreathingExercise {
                 this.instruction.textContent = 'breathe in';
                 this.signalTransition();
             }
+        } else if (this.variations[this.currentVariation].type === 'nadi') {
+            const cycleLength = this.inhaleTime + this.exhaleTime;
+            const totalCycle = cycleLength * 2; // Complete left-right cycle
+            const adjustedProgress = cycleProgress % totalCycle;
+            
+            // First half of cycle (Left inhale -> Right exhale)
+            if (adjustedProgress < cycleLength) {
+                if (adjustedProgress < this.inhaleTime) {
+                    if (this.instruction.textContent !== 'breathe in') {
+                        this.instruction.innerHTML = 'breathe in<br><em style="font-weight: 300">Left</em>';
+                        this.signalTransition();
+                    }
+                } else if (Math.abs(adjustedProgress - this.inhaleTime) < threshold) {
+                    this.instruction.innerHTML = 'breathe out<br><em style="font-weight: 300">Right</em>';
+                    this.signalTransition();
+                }
+            } 
+            // Second half of cycle (Right inhale -> Left exhale)
+            else {
+                const secondHalfProgress = adjustedProgress - cycleLength;
+                if (secondHalfProgress < this.inhaleTime) {
+                    if (Math.abs(secondHalfProgress) < threshold) {
+                        this.instruction.innerHTML = 'breathe in<br><em style="font-weight: 300">Right</em>';
+                        this.signalTransition();
+                    }
+                } else if (Math.abs(secondHalfProgress - this.inhaleTime) < threshold) {
+                    this.instruction.innerHTML = 'breathe out<br><em style="font-weight: 300">Left</em>';
+                    this.signalTransition();
+                }
+            }
         } else {
             // Regular patterns (Light, Slow, Deep)
             const inhaleEnd = this.inhaleTime;
@@ -307,6 +343,25 @@ class BreathingExercise {
                 this.circleBackground.setAttribute('transform', `scale(1.2)`);
             } else {
                 const exhaleProgress = (cycleProgress - this.inhaleTime - this.inhaleHoldTime) / this.exhaleTime;
+                const scale = 1.2 - exhaleProgress * 0.2;
+                this.circleBackground.setAttribute('transform', `scale(${scale})`);
+                this.circleBackground.setAttribute('fill', 'rgba(30, 30, 30, 0.9)');
+            }
+        } else if (this.variations[this.currentVariation].type === 'nadi') {
+            const cycleLength = this.inhaleTime + this.exhaleTime;
+            const totalCycle = cycleLength * 2;
+            const adjustedProgress = cycleProgress % totalCycle;
+            
+            // Handle both halves of the cycle
+            const currentHalfProgress = adjustedProgress < cycleLength ? 
+                adjustedProgress : adjustedProgress - cycleLength;
+
+            if (currentHalfProgress < this.inhaleTime) {
+                const scale = 1 + (currentHalfProgress / this.inhaleTime) * 0.2;
+                this.circleBackground.setAttribute('transform', `scale(${scale})`);
+                this.circleBackground.setAttribute('fill', 'rgba(50, 50, 50, 0.9)');
+            } else {
+                const exhaleProgress = (currentHalfProgress - this.inhaleTime) / this.exhaleTime;
                 const scale = 1.2 - exhaleProgress * 0.2;
                 this.circleBackground.setAttribute('transform', `scale(${scale})`);
                 this.circleBackground.setAttribute('fill', 'rgba(30, 30, 30, 0.9)');

@@ -294,4 +294,11 @@ body {
     margin: 0;
     position: relative;
     top: -8px;
+}
+
+/* Add styles for the nostril indication */
+.breathing-instruction em {
+    font-size: 18px;
+    opacity: 0.7;
+    font-style: italic;
 } 
