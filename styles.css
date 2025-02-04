@@ -123,6 +123,9 @@ body {
     color: #fff;
     font-size: 24px;
     font-family: 'Faustina', serif;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
 }
 
 .breathing-circle-background {
@@ -249,6 +252,7 @@ body {
     align-items: center;
     gap: 20px;
     color: white;
+    height: 24px;
 }
 
 .control-label {
@@ -267,6 +271,7 @@ body {
 .control-icon {
     width: 24px;
     height: 24px;
+    display: block;
 }
 
 .variation-row {
