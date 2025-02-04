@@ -232,8 +232,8 @@ class BreathingExercise {
         this.updateProgressRing(currentAngle);
         this.updateDialPosition(currentAngle);
 
-        // Make threshold tighter for more precise timing
-        const threshold = 0.05; // Fixed 50ms threshold instead of percentage
+        // Make threshold even tighter for precise timing
+        const threshold = 0.02; // 20ms threshold for more precise transitions
 
         // Handle state transitions and vibrations
         if (this.variations[this.currentVariation].type === 'box') {
@@ -259,25 +259,29 @@ class BreathingExercise {
             // Deep & Relaxed (4-7-8)
             const inhaleEnd = this.inhaleTime;
             const holdEnd = inhaleEnd + this.inhaleHoldTime;
+            const cycleEnd = this.cycleTime;
             
-            if (Math.abs(cycleProgress - inhaleEnd) < threshold) {
+            // Only trigger at exact end points
+            if (cycleProgress >= inhaleEnd && cycleProgress < inhaleEnd + threshold) {
                 this.instruction.textContent = 'hold';
                 this.signalTransition();
-            } else if (Math.abs(cycleProgress - holdEnd) < threshold) {
+            } else if (cycleProgress >= holdEnd && cycleProgress < holdEnd + threshold) {
                 this.instruction.textContent = 'breathe out';
                 this.signalTransition();
-            } else if (Math.abs(cycleProgress) < threshold || Math.abs(cycleProgress - this.cycleTime) < threshold) {
+            } else if (cycleProgress >= cycleEnd - threshold || cycleProgress < threshold) {
                 this.instruction.textContent = 'breathe in';
                 this.signalTransition();
             }
         } else {
             // Regular patterns (Light, Slow, Deep)
             const inhaleEnd = this.inhaleTime;
+            const cycleEnd = this.cycleTime;
             
-            if (Math.abs(cycleProgress - inhaleEnd) < threshold) {
+            // Only trigger at exact end points
+            if (cycleProgress >= inhaleEnd && cycleProgress < inhaleEnd + threshold) {
                 this.instruction.textContent = 'breathe out';
                 this.signalTransition();
-            } else if (Math.abs(cycleProgress) < threshold || Math.abs(cycleProgress - this.cycleTime) < threshold) {
+            } else if (cycleProgress >= cycleEnd - threshold || cycleProgress < threshold) {
                 this.instruction.textContent = 'breathe in';
                 this.signalTransition();
             }
@@ -395,14 +399,19 @@ class BreathingExercise {
     }
 
     signalTransition() {
-        if (this.isPaused) return; // Don't signal during pause
+        if (this.isPaused) return;
         
         // Clear any pending vibrations
         navigator.vibrate(0);
         
-        // Much stronger vibration pattern
-        this.vibrate([0, 300, 100, 300]);
-        this.playTransitionSound();
+        // Play both sound and vibration at the exact same time
+        if (this.soundEnabled) {
+            this.playTransitionSound();
+        }
+        if (this.vibrationEnabled && this.hasVibration) {
+            // Use same timing as sound (100ms total duration)
+            navigator.vibrate([100]);
+        }
     }
 
     // New helper methods to separate visual updates
