@@ -184,7 +184,7 @@ class BreathingExercise {
                 const mainText = this.instruction.querySelector('tspan');
                 const nostrilText = this.instruction.querySelector('.nostril-text');
                 mainText.textContent = 'breathe in';
-                nostrilText.textContent = this.variations[this.currentVariation].type === 'nadi' ? 'Left Nostril' : '';
+                nostrilText.textContent = this.variations[this.currentVariation].type === 'nadi' ? 'left nostril' : '';
                 this.signalTransition();
             }
             const pauseDuration = performance.now() - (this.startTime + this.pausedProgress);
@@ -228,10 +228,18 @@ class BreathingExercise {
         // Reset text positions and content
         const mainText = this.instruction.querySelector('tspan');
         const nostrilText = this.instruction.querySelector('.nostril-text');
-        mainText.setAttribute('dy', '-12');
-        mainText.textContent = 'begin';
-        nostrilText.setAttribute('dy', '24');
-        nostrilText.textContent = '';
+        
+        // Center the text properly
+        if (this.variations[this.currentVariation].type === 'nadi') {
+            mainText.setAttribute('dy', '-12');
+            mainText.textContent = 'begin';
+            nostrilText.setAttribute('dy', '24');
+            nostrilText.textContent = '';
+        } else {
+            mainText.setAttribute('dy', '0');
+            mainText.textContent = 'begin';
+            nostrilText.textContent = '';
+        }
         
         this.circleBackground.setAttribute('fill', 'rgba(30, 30, 30, 0.9)');
         
@@ -242,10 +250,18 @@ class BreathingExercise {
         // Reset text positions and content
         const mainText = this.instruction.querySelector('tspan');
         const nostrilText = this.instruction.querySelector('.nostril-text');
-        mainText.setAttribute('dy', '-12');
-        mainText.textContent = 'begin';
-        nostrilText.setAttribute('dy', '24');
-        nostrilText.textContent = '';
+        
+        // Center the text properly
+        if (this.variations[this.currentVariation].type === 'nadi') {
+            mainText.setAttribute('dy', '-12');
+            mainText.textContent = 'begin';
+            nostrilText.setAttribute('dy', '24');
+            nostrilText.textContent = '';
+        } else {
+            mainText.setAttribute('dy', '0');
+            mainText.textContent = 'begin';
+            nostrilText.textContent = '';
+        }
         
         this.circleBackground.setAttribute('fill', 'rgba(30, 30, 30, 0.9)');
         this.updateTimer();
