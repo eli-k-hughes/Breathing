@@ -60,6 +60,19 @@ class BreathingExercise {
         if (radioButton) {
             radioButton.checked = true;
         }
+
+        // Initialize text elements with proper positioning based on variation type
+        const mainText = this.instruction.querySelector('tspan');
+        const nostrilText = this.instruction.querySelector('.nostril-text');
+        
+        if (this.variations[lastUsedVariation].type === 'nadi') {
+            mainText.setAttribute('dy', '-12');
+            nostrilText.setAttribute('dy', '24');
+        } else {
+            mainText.setAttribute('dy', '0');
+        }
+        mainText.textContent = 'begin';
+        nostrilText.textContent = '';
         
         // Listen for variation changes
         document.querySelectorAll('input[name="variation"]').forEach(radio => {
@@ -350,7 +363,7 @@ class BreathingExercise {
                     }
                 }
             } 
-            // Second half of cycle (Right inhale/exhale)
+            // Second half of cycle (Right inhale -> Left exhale)
             else {
                 const secondHalfProgress = adjustedProgress - cycleLength;
                 if (secondHalfProgress < this.inhaleTime) {
@@ -366,7 +379,7 @@ class BreathingExercise {
                     const mainText = this.instruction.querySelector('tspan');
                     const nostrilText = this.instruction.querySelector('.nostril-text');
                     mainText.textContent = 'breathe out';
-                    nostrilText.textContent = 'right nostril';
+                    nostrilText.textContent = 'left nostril';  // Changed to left nostril for exhale
                     
                     if (Math.abs(secondHalfProgress - this.inhaleTime) < threshold) {
                         this.signalTransition();
@@ -380,10 +393,16 @@ class BreathingExercise {
             
             // Only trigger at exact end points
             if (cycleProgress >= inhaleEnd && cycleProgress < inhaleEnd + threshold) {
-                this.instruction.textContent = 'breathe out';
+                const mainText = this.instruction.querySelector('tspan');
+                const nostrilText = this.instruction.querySelector('.nostril-text');
+                mainText.textContent = 'breathe out';
+                nostrilText.textContent = '';
                 this.signalTransition();
             } else if (cycleProgress >= cycleEnd - threshold || cycleProgress < threshold) {
-                this.instruction.textContent = 'breathe in';
+                const mainText = this.instruction.querySelector('tspan');
+                const nostrilText = this.instruction.querySelector('.nostril-text');
+                mainText.textContent = 'breathe in';
+                nostrilText.textContent = '';
                 this.signalTransition();
             }
         }
