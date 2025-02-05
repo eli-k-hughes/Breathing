@@ -334,7 +334,7 @@ class BreathingExercise {
                     }
                 }
             } 
-            // Second half of cycle (Right inhale -> Left exhale)
+            // Second half of cycle (Right inhale/exhale)
             else {
                 const secondHalfProgress = adjustedProgress - cycleLength;
                 if (secondHalfProgress < this.inhaleTime) {
@@ -350,7 +350,7 @@ class BreathingExercise {
                     const mainText = this.instruction.querySelector('tspan');
                     const nostrilText = this.instruction.querySelector('.nostril-text');
                     mainText.textContent = 'breathe out';
-                    nostrilText.textContent = 'left nostril';  // Changed back to left nostril for exhale
+                    nostrilText.textContent = 'right nostril';
                     
                     if (Math.abs(secondHalfProgress - this.inhaleTime) < threshold) {
                         this.signalTransition();
