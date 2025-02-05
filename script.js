@@ -68,11 +68,13 @@ class BreathingExercise {
         if (this.variations[lastUsedVariation].type === 'nadi') {
             mainText.setAttribute('dy', '-12');
             nostrilText.setAttribute('dy', '24');
+            mainText.textContent = 'begin';
+            nostrilText.textContent = 'left nostril';  // Show initial nostril instruction
         } else {
             mainText.setAttribute('dy', '0');
+            mainText.textContent = 'begin';
+            nostrilText.textContent = '';
         }
-        mainText.textContent = 'begin';
-        nostrilText.textContent = '';
         
         // Listen for variation changes
         document.querySelectorAll('input[name="variation"]').forEach(radio => {
@@ -196,13 +198,23 @@ class BreathingExercise {
                 // First start of the exercise
                 const mainText = this.instruction.querySelector('tspan');
                 const nostrilText = this.instruction.querySelector('.nostril-text');
-                mainText.textContent = 'breathe in';
-                nostrilText.textContent = this.variations[this.currentVariation].type === 'nadi' ? 'left nostril' : '';
+                
+                if (this.variations[this.currentVariation].type === 'nadi') {
+                    mainText.setAttribute('dy', '-12');  // Adjust position for two lines
+                    nostrilText.setAttribute('dy', '24');
+                    mainText.textContent = 'breathe in';
+                    nostrilText.textContent = 'left nostril';
+                } else {
+                    mainText.setAttribute('dy', '0');  // Center single line
+                    mainText.textContent = 'breathe in';
+                    nostrilText.textContent = '';
+                }
+                
                 this.signalTransition();
             }
             const pauseDuration = performance.now() - (this.startTime + this.pausedProgress);
             this.startTime = performance.now() - this.pausedProgress;
-            this.animate();
+            this.animate(this.startTime);
             this.updateTimer();
         }
     }
@@ -242,17 +254,10 @@ class BreathingExercise {
         const mainText = this.instruction.querySelector('tspan');
         const nostrilText = this.instruction.querySelector('.nostril-text');
         
-        // Center the text properly
-        if (this.variations[this.currentVariation].type === 'nadi') {
-            mainText.setAttribute('dy', '-12');
-            mainText.textContent = 'begin';
-            nostrilText.setAttribute('dy', '24');
-            nostrilText.textContent = '';
-        } else {
-            mainText.setAttribute('dy', '0');
-            mainText.textContent = 'begin';
-            nostrilText.textContent = '';
-        }
+        // Always center the "begin" text
+        mainText.setAttribute('dy', '0');
+        mainText.textContent = 'begin';
+        nostrilText.textContent = '';
         
         this.circleBackground.setAttribute('fill', 'rgba(30, 30, 30, 0.9)');
         
@@ -264,17 +269,10 @@ class BreathingExercise {
         const mainText = this.instruction.querySelector('tspan');
         const nostrilText = this.instruction.querySelector('.nostril-text');
         
-        // Center the text properly
-        if (this.variations[this.currentVariation].type === 'nadi') {
-            mainText.setAttribute('dy', '-12');
-            mainText.textContent = 'begin';
-            nostrilText.setAttribute('dy', '24');
-            nostrilText.textContent = '';
-        } else {
-            mainText.setAttribute('dy', '0');
-            mainText.textContent = 'begin';
-            nostrilText.textContent = '';
-        }
+        // Always center the "begin" text
+        mainText.setAttribute('dy', '0');
+        mainText.textContent = 'begin';
+        nostrilText.textContent = '';
         
         this.circleBackground.setAttribute('fill', 'rgba(30, 30, 30, 0.9)');
         this.updateTimer();
@@ -338,8 +336,8 @@ class BreathingExercise {
             }
         } else if (this.variations[this.currentVariation].type === 'nadi') {
             const cycleLength = this.inhaleTime + this.exhaleTime;
-            const totalCycle = cycleLength * 2;
-            const adjustedProgress = cycleProgress % totalCycle;
+            const totalCycle = cycleLength * 2;  // Full cycle is twice the length
+            const adjustedProgress = progress % totalCycle;  // Changed from cycleProgress to progress
             
             // First half of cycle (Left inhale -> Right exhale)
             if (adjustedProgress < cycleLength) {
@@ -379,7 +377,7 @@ class BreathingExercise {
                     const mainText = this.instruction.querySelector('tspan');
                     const nostrilText = this.instruction.querySelector('.nostril-text');
                     mainText.textContent = 'breathe out';
-                    nostrilText.textContent = 'left nostril';  // Changed to left nostril for exhale
+                    nostrilText.textContent = 'left nostril';
                     
                     if (Math.abs(secondHalfProgress - this.inhaleTime) < threshold) {
                         this.signalTransition();
