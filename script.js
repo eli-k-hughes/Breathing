@@ -209,7 +209,10 @@ class BreathingExercise {
         this.lastTimerUpdate = null;
         
         // Show begin text instead of start
-        this.instruction.textContent = 'begin';
+        const mainText = this.instruction.querySelector('tspan');
+        const nostrilText = this.instruction.querySelector('.nostril-text');
+        mainText.textContent = 'begin';
+        nostrilText.textContent = '';  // Clear nostril text
         this.circleBackground.setAttribute('fill', 'rgba(30, 30, 30, 0.9)');
         
         this.start();
@@ -217,7 +220,10 @@ class BreathingExercise {
 
     start() {
         // Don't start animation immediately
-        this.instruction.textContent = 'begin';
+        const mainText = this.instruction.querySelector('tspan');
+        const nostrilText = this.instruction.querySelector('.nostril-text');
+        mainText.textContent = 'begin';
+        nostrilText.textContent = '';  // Clear nostril text
         this.circleBackground.setAttribute('fill', 'rgba(30, 30, 30, 0.9)');
         this.updateTimer();
     }
