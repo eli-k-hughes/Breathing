@@ -1,12 +1,12 @@
 const CACHE_NAME = 'breathing-app-v1';
 const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/script.js',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/Breathing/',
+  '/Breathing/index.html',
+  '/Breathing/styles.css',
+  '/Breathing/script.js',
+  '/Breathing/manifest.json',
+  '/Breathing/icon-192.png',
+  '/Breathing/icon-512.png'
 ];
 
 self.addEventListener('install', (event) => {
